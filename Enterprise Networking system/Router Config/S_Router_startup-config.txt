@@ -1,0 +1,192 @@
+!
+version 15.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router
+!
+!
+!
+!
+ip dhcp excluded-address 172.16.4.17 172.16.4.18
+ip dhcp excluded-address 172.16.4.65 172.16.4.66
+ip dhcp excluded-address 172.16.4.33 172.16.4.34
+ip dhcp excluded-address 172.16.4.129 172.16.4.130
+ip dhcp excluded-address 172.16.4.97 172.16.4.98
+ip dhcp excluded-address 172.16.5.1 172.16.5.2
+ip dhcp excluded-address 172.16.5.3 172.16.5.4
+ip dhcp excluded-address 172.16.4.19
+ip dhcp excluded-address 172.16.4.67
+ip dhcp excluded-address 172.16.4.35
+ip dhcp excluded-address 172.16.4.131
+ip dhcp excluded-address 172.16.4.99
+ip dhcp excluded-address 172.16.5.5
+!
+ip dhcp pool IT
+ network 172.16.4.16 255.255.255.240
+ default-router 172.16.4.18
+ dns-server 172.16.5.1
+ip dhcp pool Sales
+ network 172.16.4.64 255.255.255.224
+ default-router 172.16.4.66
+ dns-server 172.16.5.1
+ip dhcp pool Finance
+ network 172.16.4.32 255.255.255.224
+ default-router 172.16.4.34
+ dns-server 172.16.5.1
+ip dhcp pool Marketing
+ network 172.16.4.128 255.255.255.224
+ default-router 172.16.4.130
+ dns-server 172.16.5.1
+ip dhcp pool HumanResc
+ network 172.16.4.96 255.255.255.224
+ default-router 172.16.4.98
+ dns-server 172.16.5.1
+ip dhcp pool Servers
+ network 172.16.5.0 255.255.255.224
+ default-router 172.16.5.3
+ dns-server 172.16.5.1
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ ip address 172.16.4.2 255.255.255.240
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/0.20
+ encapsulation dot1Q 20
+ ip address 172.16.4.18 255.255.255.240
+ standby 1 ip 172.16.4.19
+ standby 1 priority 95
+ standby preempt
+!
+interface GigabitEthernet0/0/0.30
+ encapsulation dot1Q 30
+ ip address 172.16.4.66 255.255.255.224
+ standby 1 ip 172.16.4.67
+ standby 1 priority 95
+ standby preempt
+!
+interface GigabitEthernet0/0/0.40
+ encapsulation dot1Q 40
+ ip address 172.16.4.34 255.255.255.224
+ standby 1 ip 172.16.4.35
+ standby 1 priority 95
+ standby preempt
+!
+interface GigabitEthernet0/0/0.50
+ encapsulation dot1Q 50
+ ip address 172.16.4.130 255.255.255.224
+ standby 1 ip 172.16.4.131
+ standby 1 priority 95
+ standby preempt
+!
+interface GigabitEthernet0/0/0.60
+ encapsulation dot1Q 60
+ ip address 172.16.4.98 255.255.255.224
+ standby 1 ip 172.16.4.99
+ standby 1 priority 95
+ standby preempt
+!
+interface GigabitEthernet0/0/0.70
+ encapsulation dot1Q 70
+ ip address 172.16.5.3 255.255.255.224
+ standby 1 ip 172.16.5.5
+ standby 1 priority 95
+ standby preempt
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/2
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/1/0
+ ip address 30.0.0.10 255.255.255.248
+ ip nat outside
+!
+interface Serial0/1/1
+ no ip address
+ clock rate 2000000
+!
+interface GigabitEthernet0/2/0
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2/1
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2/2
+ switchport mode access
+ switchport nonegotiate
+!
+interface GigabitEthernet0/2/3
+ switchport mode access
+ switchport nonegotiate
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ log-adjacency-changes
+ network 172.16.4.0 0.0.1.255 area 0
+ network 30.0.0.8 0.0.0.7 area 0
+ network 172.16.4.0 0.0.0.0 area 0
+ network 172.16.4.2 0.0.0.0 area 0
+ network 30.0.0.9 0.0.0.0 area 0
+!
+ip nat pool DYNAMICNAT 30.0.0.11 30.0.0.14 netmask 255.255.255.248
+ip nat inside source list 1 pool DYNAMICNAT
+ip classless
+!
+ip flow-export version 9
+!
+!
+access-list 1 permit 172.16.4.0 0.0.1.255
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
